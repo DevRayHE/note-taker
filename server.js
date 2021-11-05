@@ -61,8 +61,18 @@ app.post('/api/notes', (req, res) => {
   res.json(response);
 });
 
+// Delete request to delete a note
+app.delete('/api/notes/:id', (req, res) => {
+  // Log request to the terminal
+  // console.info(`${req.method} request received to delte note with id ${id}`);
+  console.info(`${req.method} request received to delte note with request body ${req.body}`);
+  console.info(`${req.method} request received to delte note with id ${req.params.id}`);
 
-// app.delete();
+  const id = req.params.id;
+
+  console.info(`Note with ${id} should be deleted!`);
+  return res.json(`Note with ${id} should be deleted!`);
+});
 
 // Get request to retrive current notes
 app.get('/api/notes', (req, res) => {

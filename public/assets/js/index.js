@@ -73,7 +73,9 @@ const handleNoteSave = () => {
   };
   saveNote(newNote).then(() => {
     getAndRenderNotes();
+    console.log(`getAndRenderNotes() triggered`);
     renderActiveNote();
+    console.log(`renderActiveNote() triggered`);
   });
 };
 
@@ -84,6 +86,8 @@ const handleNoteDelete = (e) => {
 
   const note = e.target;
   const noteId = JSON.parse(note.parentElement.getAttribute('data-note')).id;
+  console.log(`noteID is ${noteId}`);
+  console.log(`activeNoteID is ${activeNote.id}`);
 
   if (activeNote.id === noteId) {
     activeNote = {};
@@ -97,6 +101,7 @@ const handleNoteDelete = (e) => {
 
 // Sets the activeNote and displays it
 const handleNoteView = (e) => {
+  console.log(`handleNoteView() triggered`);
   e.preventDefault();
   activeNote = JSON.parse(e.target.parentElement.getAttribute('data-note'));
   renderActiveNote();
