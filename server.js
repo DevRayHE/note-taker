@@ -2,8 +2,6 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const uniqid = require('uniqid')
-// const notes = require('./db/db.json');
-
 
 const PORT = process.env.port || 3002;
 const app = express();
@@ -14,7 +12,6 @@ app.use(express.urlencoded({ extend: true}));
 app.use(express.json());
 
 app.use(express.static('public'))
-
 
 // Post request to add a note
 app.post('/api/notes', (req, res) => {
@@ -70,8 +67,23 @@ app.delete('/api/notes/:id', (req, res) => {
 
   const id = req.params.id;
 
-  console.info(`Note with ${id} should be deleted!`);
-  return res.json(`Note with ${id} should be deleted!`);
+  fs.readFile('./db/db.json', 'utf8', (err, data) => {
+    console.info(`${req.method} request received to get notes`);
+    let allNotes = JSON.parse(data);
+
+    const notesAfterDelete = allNotes.filter((note) => note.id !== id)
+
+    fs.writeFile(
+      './db/db.json', 
+      JSON.stringify(notesAfterDelete, null, 2),
+      (writeErr) =>
+        writeErr
+          ? console.error(writeErr)
+          : console.info('Successfully updated notes!')
+    )
+  })
+
+  return res.json(`Note with ${id} has been deleted!`);
 });
 
 // Get request to retrive current notes
@@ -83,7 +95,7 @@ app.get('/api/notes', (req, res) => {
   })
 });
 
-// Get request to retrive nots.html file
+// Get request to retrive notes.html file
 app.get('/notes', (req, res) => {
   res.sendFile(path.join(__dirname, './public/notes.html'))
 });
