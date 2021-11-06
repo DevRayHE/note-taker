@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const uniqid = require('uniqid')
 
-const PORT = process.env.port || 3002;
+const PORT = process.env.PORT || 3002;
 const app = express();
 
 // Middleware for unlencoded data
