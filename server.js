@@ -2,7 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const uniqid = require('uniqid')
-const notes = require('./db/db.json');
+// const notes = require('./db/db.json');
 
 
 const PORT = process.env.port || 3002;
@@ -77,9 +77,10 @@ app.delete('/api/notes/:id', (req, res) => {
 // Get request to retrive current notes
 app.get('/api/notes', (req, res) => {
   // Log request to the terminal
-  console.info(`${req.method} request received to get notes`);
-
-  return res.json(notes);
+  fs.readFile('./db/db.json', 'utf8', (err, data) => {
+    console.info(`${req.method} request received to get notes`);
+    res.json(JSON.parse(data));
+  })
 });
 
 // Get request to retrive nots.html file
