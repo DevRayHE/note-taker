@@ -1,7 +1,10 @@
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
 const uniqid = require('uniqid')
+const {
+  readFromFile,
+  writeToFile,
+} = require ('./helpers/fsUtils');
 
 const PORT = process.env.PORT || 3002;
 const app = express();
@@ -19,7 +22,6 @@ app.post('/api/notes', (req, res) => {
 
   const {title, text} = req.body;
   const id = uniqid();
-  console.info(`${req.body}  ${title}  ${text}`);
 
   const newNote = {
     title,
@@ -28,25 +30,14 @@ app.post('/api/notes', (req, res) => {
   }
 
   // Obtain exisiting notes
-  fs.readFile('./db/db.json', 'utf8', (err, data) => {
-    if (err) {
-      console.error(err);
-    } else {
-      // Convert string into JSON object
-      const parsedNotes = JSON.parse(data);
+  readFromFile('./db/db.json')
+    .then((data) => {
+    const parsedNotes = JSON.parse(data);
 
       // Add a new note
-      parsedNotes.push(newNote);
+    parsedNotes.push(newNote);
 
-      fs.writeFile(
-        './db/db.json', 
-        JSON.stringify(parsedNotes, null, 2),
-        (writeErr) =>
-          writeErr
-            ? console.error(writeErr)
-            : console.info('Successfully updated notes!')
-      )
-    }
+    writeToFile('./db/db.json', parsedNotes);
   });
 
   const response = {
@@ -60,39 +51,27 @@ app.post('/api/notes', (req, res) => {
 
 // Delete request to delete a note
 app.delete('/api/notes/:id', (req, res) => {
-  // Log request to the terminal
-  // console.info(`${req.method} request received to delte note with id ${id}`);
-  console.info(`${req.method} request received to delte note with request body ${req.body}`);
-  console.info(`${req.method} request received to delte note with id ${req.params.id}`);
-
   const id = req.params.id;
 
-  fs.readFile('./db/db.json', 'utf8', (err, data) => {
-    console.info(`${req.method} request received to get notes`);
-    let allNotes = JSON.parse(data);
+  readFromFile('./db/db.json')
+    .then((data) => {
+      let allNotes = JSON.parse(data);
 
-    const notesAfterDelete = allNotes.filter((note) => note.id !== id)
+      const notesAfterDelete = allNotes.filter((note) => note.id !== id);
 
-    fs.writeFile(
-      './db/db.json', 
-      JSON.stringify(notesAfterDelete, null, 2),
-      (writeErr) =>
-        writeErr
-          ? console.error(writeErr)
-          : console.info('Successfully updated notes!')
-    )
-  })
+      writeToFile('./db/db.json', notesAfterDelete);
+    });
 
-  return res.json(`Note with ${id} has been deleted!`);
+  res.json(`Note with ${id} has been deleted!`);
 });
 
 // Get request to retrive current notes
 app.get('/api/notes', (req, res) => {
   // Log request to the terminal
-  fs.readFile('./db/db.json', 'utf8', (err, data) => {
-    console.info(`${req.method} request received to get notes`);
-    res.json(JSON.parse(data));
-  })
+  readFromFile('./db/db.json')
+    .then((data) => {
+      res.json(JSON.parse(data));
+    });
 });
 
 // Get request to retrive notes.html file

@@ -62,17 +62,14 @@
 
 [Link to this repo url on Github](https://github.com/DevRayHE/note-taker.git)
 
-### Follow the steps below to install:Clone the Github Repository to your local storage.
-Start up your favourite terminal.
-Navigate to the repository local folder.
-Run npm i
-Run npm start
-A professional note taker is now for your!
+### Follow the steps below to install:
 
---------------
-
-Alternatively follow the link below to the deployed version on Heroku:
-
+1. Clone the Github Repository to your local storage.
+2. Start up your favourite terminal.
+3. Navigate to the repository local folder.
+4. Run npm i
+5. Run npm start
+6. A professional note taker is now ready!
 
  --- 
 
